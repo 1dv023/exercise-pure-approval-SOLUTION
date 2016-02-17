@@ -1,0 +1,29 @@
+{
+  "name": "mats-examination-2",
+  "version": "1.0.0",
+  "description": "Sticky snippets!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1dv023/mats-examination-2.git"
+  },
+  "author": "Mats Loock",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/1dv023/mats-examination-2/issues"
+  },
+  "homepage": "https://github.com/1dv023/mats-examination-2#readme",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.14.2",
+    "cookie-parser": "^1.4.1",
+    "csurf": "^1.8.3",
+    "express": "^4.13.4",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.13.0",
+    "mongoose": "^4.3.7"
+  }
+}
