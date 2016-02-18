@@ -15,6 +15,8 @@ let PureNumber = require("../models/PureNumber");
  */
 router.route("/")
     .get(function(req, res) {
+        // FROM THE DOCS: Mongoose queries are not promises. However, they do have a .then() function for
+        // yield and async/await. If you need a fully-fledged promise, use the .exec() function.
         PureNumber.find({}).exec()
             .then (function(doc) {
                 // TODO: Lazy programmer! I don't transform the document to a view model...

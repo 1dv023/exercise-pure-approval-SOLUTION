@@ -9,13 +9,12 @@
 
 // Setup ------------------------------------------------------------
 let express      = require("express");
-let mongoose     = require("mongoose");
 let path         = require("path");
 let session      = require("express-session");
 let bodyParser   = require("body-parser");
 let exphbs       = require("express-handlebars");
 
-let configDb     = require("./config/database.js");
+let mongoose     = require("./config/mongoose.js");
 
 let app  = express();
 let port = process.env.PORT || 8000;
@@ -23,7 +22,7 @@ let port = process.env.PORT || 8000;
 // Configuration ----------------------------------------------------
 
 // Connect to the database.
-mongoose.connect(configDb.connectionString);
+mongoose();
 
 // View engine.
 app.engine(".hbs", exphbs({
