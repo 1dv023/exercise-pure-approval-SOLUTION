@@ -10,20 +10,28 @@
 let router     = require("express").Router();
 let PureNumber = require("../models/PureNumber");
 
-// /
+/**
+ * Finds all pure numbers in the database and renders them.
+ */
 router.route("/")
     .get(function(req, res) {
-        PureNumber.find({}, function(error, pureNumbers) {
-            if (error) {
-                req.session.flash = {type: "danger", text: error.message};
-                pureNumbers = [];
-            }
-
-            res.render("home/index", { pureNumbers: pureNumbers });
-        });
+        PureNumber.find({}).exec()
+            .then (function(doc) {
+                // TODO: Lazy programmer! I don't transform the document to a view model...
+                res.render("home/index", { pureNumbers: doc });
+            })
+            .catch (function(err) {
+                res.render("home/index", {
+                    // DIRTY(?): Use the flash partial to view the error message.
+                    flash: {type: "danger", text: err.message},
+                    pureNumbers: []
+                });
+            });
     });
 
-// /create
+/**
+ * Crates and saves a pure number in the database.
+ */
 router.route("/create")
     .get(function(req, res) {
         res.render("home/create", {value: undefined});
@@ -42,15 +50,17 @@ router.route("/create")
                 res.redirect("/");
             })
             .catch(function(err) {
-                // ...or, if an error occurred, view the form and an error message.
-                console.error(err);
+                // ...or, if an validation error occurred, view the form and an error message.
                 if (err.errors.value.name === "ValidatorError") {
+                    // We handle the validation error!
                     return res.render("home/create", {
                         validationErrors: [err.errors.value.message],
                         value: req.body.value
                     });
                 } else if (err.errors.value.name === "CastError") {
-                    // If cast error it's a bad request!
+                    // If it's a cast error we considers it's a bad request!
+                    // (Maybe not the smartest thing to do, but WTF, we need to learn
+                    // to what to do if we want to change the status of the response.)
                     err.status = 400;
                 }
 

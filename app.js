@@ -59,7 +59,7 @@ app.use(function(req, res, next) {
     res.render("error/404");
 });
 
-// 400 handler
+// 400 handler.
 app.use(function(err, req, res, next) {
     if (err.status !== 400) {
         return next(err);
@@ -69,7 +69,7 @@ app.use(function(err, req, res, next) {
     res.status(400).render("error/400");
 });
 
-// 500 handler
+// 500 handler.
 app.use(function(err, req, res, next) {
     console.error(err.stack);
     res.status(500).render("error/500");
