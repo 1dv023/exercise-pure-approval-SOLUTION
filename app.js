@@ -13,10 +13,9 @@ let mongoose     = require("mongoose");
 let path         = require("path");
 let session      = require("express-session");
 let bodyParser   = require("body-parser");
-let cookieParser = require("cookie-parser");
 let exphbs       = require("express-handlebars");
 
-let configDb           = require("./config/database.js");
+let configDb     = require("./config/database.js");
 
 let app  = express();
 let port = process.env.PORT || 8000;
@@ -28,7 +27,7 @@ mongoose.connect(configDb.connectionString);
 
 // View engine.
 app.engine(".hbs", exphbs({
-    defaultLayout: "main",
+    defaultLayout: "default",
     extname: ".hbs"
 }));
 app.set("view engine", ".hbs");
@@ -43,9 +42,10 @@ app.use(session({
     resave: false
 }));
 
-app.use(function(request, response, next) {
-    response.locals.flash = request.session.flash;
-    delete request.session.flash;
+// Flash messages - survives only a round trip.
+app.use(function(req, res, next) {
+    res.locals.flash = req.session.flash;
+    delete req.session.flash;
 
     next();
 });
@@ -54,14 +54,13 @@ app.use(function(request, response, next) {
 app.use("/", require("./routes/home.js"));
 
 // 404 catch-all handler.
-app.use(function(request, response, next) {
-    response.status(404);
-    response.render("error/404");
+app.use(function(req, res, next) {
+    res.status(404);
+    res.render("error/404");
 });
 
 // 400 handler
 app.use(function(err, req, res, next) {
-    console.error(err);
     if (err.status !== 400) {
         return next(err);
     }

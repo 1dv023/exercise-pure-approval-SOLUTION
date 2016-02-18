@@ -46,8 +46,7 @@ router.route("/create")
                 console.error(err);
                 if (err.errors.value.name === "ValidatorError") {
                     return res.render("home/create", {
-                        // TODO: Validation error instead of flash error?
-                        flash: {type: "danger", text: err.errors.value.message},
+                        validationErrors: [err.errors.value.message],
                         value: req.body.value
                     });
                 } else if (err.errors.value.name === "CastError") {
