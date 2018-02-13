@@ -4,7 +4,7 @@
 <form method="post" action="/create" class="form-create-product">
   {{>validationSummary}}
   <div class="form-label-group">
-    <input type="number" id="inputName" class="form-control" name="value" placeholder="Pure number" required autofocus />
+    <input type="number" id="inputName" class="form-control" name="value" value="{{value}}" placeholder="Value" required autofocus />
     <label for="inputName">Pure number</label>
   </div>
 
