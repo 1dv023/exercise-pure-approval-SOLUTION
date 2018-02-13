@@ -2,43 +2,38 @@
  * Mongoose configuration.
  *
  * @author Mats Loock
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 'use strict'
 
-let mongoose = require('mongoose')
-mongoose.Promise = global.Promise
-const options = {
-  useMongoClient: true
-}
-// If using vagrant
-const CONNECTION_STRING = 'mongodb://localhost/purenumbers'
-// If using mlab
-// const CONNECTION_STRING = 'your connectionstring here'
+const mongoose = require('mongoose')
 
-module.exports = function () {
-  let db = mongoose.connection
+// DISCLAIMER: This is an example connection string. ALWAYS use an environment variable to store the connection string.
+const CONNECTION_STRING = 'mongodb://<dbuser>:<dbpassword>@ds012345.mlab.com:56789/pureapproval'
 
-  db.on('connected', function () {
-    console.log('Mongoose connection open.')
-  })
+/**
+ * Establishes a connection to a database.
+ *
+ * @returns {Promise}
+*/
+module.exports.run = async () => {
+  // Get Mongoose to use the global promise library.
+  mongoose.Promise = global.Promise
 
-  db.on('error', function (err) {
-    console.error('Mongoose connection error: ', err)
-  })
+  // Bind connection to events (to get notifications).
+  mongoose.connection.on('connected', () => console.log('Mongoose connection is open.'))
+  mongoose.connection.on('error', err => console.error(`Mongoose connection error has occured: ${err}`))
+  mongoose.connection.on('disconnected', () => console.log('Mongoose connection is disconnected.'))
 
-  db.on('disconnected', function () {
-    console.log('Mongoose connection disconnected.')
-  })
-
-    // If the Node process ends, close the Mongoose connection.
-  process.on('SIGINT', function () {
-    db.close(function () {
-      console.log('Mongoose connection disconnected through app termination.')
+  // If the Node process ends, close the Mongoose connection.
+  process.on('SIGINT', () => {
+    mongoose.connection.close(() => {
+      console.log('Mongoose connection is disconnected due to application termination.')
       process.exit(0)
     })
   })
-  mongoose.connect(CONNECTION_STRING, options)
-  return db
+
+  // Connect to the server.
+  return mongoose.connect(CONNECTION_STRING)
 }

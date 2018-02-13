@@ -1,81 +1,99 @@
 /**
- * Starting point of the application.
+ * The starting point of the application.
  *
  * @author Mats Loock
- * @version 1.0.0
+ * @version 1.1.0
  */
 
-"use strict";
+'use strict'
 
-// Setup ------------------------------------------------------------
-let express      = require("express");
-let path         = require("path");
-let session      = require("express-session");
-let bodyParser   = require("body-parser");
-let exphbs       = require("express-handlebars");
+const bodyParser = require('body-parser')
+const express = require('express')
+const exphbs = require('express-handlebars')
+const session = require('express-session')
+const path = require('path')
+const mongoose = require('./config/mongoose.js')
 
-let mongoose     = require("./config/mongoose.js");
-
-let app  = express();
-let port = process.env.PORT || 8000;
-
-// Configuration ----------------------------------------------------
+const app = express()
+const port = process.env.PORT || 8000
 
 // Connect to the database.
-mongoose();
+mongoose.run().catch(error => {
+  console.error(error)
+  process.exit(1)
+})
 
-// View engine.
-app.engine(".hbs", exphbs({
-    defaultLayout: "default",
-    extname: ".hbs"
-}));
-app.set("view engine", ".hbs");
+// Configure rendering engine, with change extension to .hbs.
+app.engine('hbs', exphbs({
+  extname: '.hbs',
+  defaultLayout: 'main'
+}))
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
-app.use(session({
-    name:   "ptJn3Dn4QZq5EizToXTa2lzx1gT43r",
-    secret: "9su2gS21MDIZoRaZKTNjll7SFhKiMB",
-    saveUninitialized: false,
-    resave: false
-}));
+// Setup view engine.
+app.set('view engine', 'hbs')
+
+// Serve static files.
+app.use(express.static(path.join(__dirname, 'public')))
+
+// Parse application/x-www-form-urlencoded.
+app.use(bodyParser.urlencoded({ extended: true }))
+
+// Setup session store with the given options.
+const sessionOptions = {
+  name: 'name of keyboard cat', // Don't use default session cookie name.
+  secret: 'keyboard cat', // Change it!!! The secret is used to hash the session with HMAC.
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 // 1 day
+  }
+}
+
+if (app.get('env') === 'production') {
+  app.set('trust proxy', 1) // trust first proxy
+  sessionOptions.cookie.secure = true // serve secure cookies
+}
+
+app.use(session(sessionOptions))
 
 // Flash messages - survives only a round trip.
-app.use(function(req, res, next) {
-    res.locals.flash = req.session.flash;
-    delete req.session.flash;
+app.use((req, res, next) => {
+  res.locals.flash = req.session.flash
+  delete req.session.flash
+  next()
+})
 
-    next();
-});
+// Define routes.
+app.use('/', require('./routes/pureNumberRoutes'))
+app.use((req, res, next) => { // catch 404 (ALWAYS keep this as the last route)
+  const error = new Error('Not Found')
+  error.status = 404
+  next(error)
+})
 
-// Routes.
-app.use("/", require("./routes/home.js"));
+// Error handler.
+app.use((err, req, res, next) => {
+  // 404 Not Found.
+  if (err.status === 404) {
+    return res.status(404).sendFile(path.join(__dirname, 'views', 'error', '404.html'))
+  }
 
-// 404 catch-all handler.
-app.use(function(req, res, next) {
-    res.status(404);
-    res.render("error/404");
-});
+  // 500 Internal Server Error (in production, all other errors send this response).
+  if (req.app.get('env') !== 'development') {
+    return res.status(500).sendFile(path.join(__dirname, 'views', 'error', '500.html'))
+  }
 
-// 400 handler.
-app.use(function(err, req, res, next) {
-    if (err.status !== 400) {
-        return next(err);
-    }
+  // Development only!
+  // Set locals, only providing error in development.
+  res.locals.error = err
 
-    console.error(err.stack);
-    res.status(400).render("error/400");
-});
+  // Render the error page.
+  res.status(err.status || 500).render('error/error')
+})
 
-// 500 handler.
-app.use(function(err, req, res, next) {
-    console.error(err.stack);
-    res.status(500).render("error/500");
-});
-
-// Launch -----------------------------------------------------------
-app.listen(port, function() {
-    console.log("Express started on http://localhost:" + port);
-    console.log("Press Ctrl-C to terminate...");
-});
+// Start listening.
+app.listen(port, () => {
+  console.log(`\nServer started on http://localhost:${port}`)
+  console.log('Press Ctrl-C to terminate...\n')
+})

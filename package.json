@@ -1,26 +1,25 @@
 {
-  "name": "exercise-pure-approval-SOLUTION",
+  "name": "exercise-pure-approval",
   "version": "1.0.0",
-  "description": "Pure Approval",
+  "description": "Exercise: Pure approval",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
+    "devstart": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/1dv023/exercise-pure-approval-SOLUTION.git"
-  },
   "author": "Mats Loock",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "bugs": {
-    "url": "https://github.com/1dv023/exercise-pure-approval-SOLUTION/issues"
-  },
-  "homepage": "https://github.com/1dv023/exercise-pure-approval-SOLUTION#readme",
+  "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.14.2",
-    "express": "^4.13.4",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
     "express-handlebars": "^3.0.0",
-    "express-session": "^1.13.0",
-    "mongoose": "^4.3.7"
+    "express-session": "^1.15.6",
+    "mongoose": "^5.0.4",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.12",
+    "standard": "^10.0.3"
   }
 }

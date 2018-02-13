@@ -1,0 +1,12 @@
+<h1>
+  <span class="fa fa-edit"></span> Create Pure Number</h1>
+
+<form method="post" action="/create" class="form-create-product">
+  {{>validationSummary}}
+  <div class="form-label-group">
+    <input type="number" id="inputName" class="form-control" name="value" placeholder="Pure number" required autofocus />
+    <label for="inputName">Pure number</label>
+  </div>
+
+  <button type="submit" class="btn btn-lg btn-primary">Save</button>
+</form>
