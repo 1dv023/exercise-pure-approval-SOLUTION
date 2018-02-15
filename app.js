@@ -10,9 +10,12 @@
 const bodyParser = require('body-parser')
 const express = require('express')
 const exphbs = require('express-handlebars')
-const session = require('express-session')
+const favicon = require('serve-favicon')
 const path = require('path')
+const session = require('express-session')
+
 const mongoose = require('./config/mongoose.js')
+const PureNumberRouter = require('./routes/PureNumberRouter')
 
 const app = express()
 const port = process.env.PORT || 8000
@@ -34,6 +37,9 @@ app.set('view engine', 'hbs')
 
 // Serve static files.
 app.use(express.static(path.join(__dirname, 'public')))
+
+// Serve a favicon from the given path.
+app.use(favicon(path.join(__dirname, 'public', 'img', 'favicon.ico')))
 
 // Parse application/x-www-form-urlencoded.
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -65,7 +71,7 @@ app.use((req, res, next) => {
 })
 
 // Define routes.
-app.use('/', require('./routes/pureNumberRoutes'))
+app.use('/', PureNumberRouter.routes)
 app.use((req, res, next) => { // catch 404 (ALWAYS keep this as the last route)
   const error = new Error('Not Found')
   error.status = 404
