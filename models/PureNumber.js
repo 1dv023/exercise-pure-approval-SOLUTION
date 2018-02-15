@@ -14,9 +14,9 @@ const Schema = mongoose.Schema
 const pureNumberSchema = new Schema({
   value: {
     type: Number,
-    required: '`{PATH}` is required!',
-    max: [42, '`{PATH}` ({VALUE}) exceeds the limit ({MAX}).'],
-    min: [1, '`{PATH}` ({VALUE}) is beneath the limit ({MIN}).']
+    required: `'{PATH}' is required!'`,
+    max: [42, `'{PATH}' ({VALUE}) exceeds the limit ({MAX}).`],
+    min: [1, `'{PATH}' ({VALUE}) is beneath the limit ({MIN}).`]
   },
   createdAt: {
     type: Date,
