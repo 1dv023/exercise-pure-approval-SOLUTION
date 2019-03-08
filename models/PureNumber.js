@@ -17,13 +17,9 @@ const pureNumberSchema = new Schema({
     required: '`{PATH}` is required!',
     max: [42, '`{PATH}` ({VALUE}) exceeds the limit ({MAX}).'],
     min: [1, '`{PATH}` ({VALUE}) is beneath the limit ({MIN}).']
-  },
-  createdAt: {
-    type: Date,
-    required: true,
-    default: Date.now
   }
 }, {
+  timestamps: true,
   versionKey: false
 })
 
