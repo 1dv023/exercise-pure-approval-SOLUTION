@@ -1,11 +1,10 @@
 <h1>
-  <span class="fa fa-edit"></span> Create Pure Number</h1>
+  <span class="far fa-plus-square"></span> Create Pure Number</h1>
 
-<form method="post" action="/create" class="form-create-product">
+<form method="post" action="/create">
   {{>validationSummary}}
-  <div class="form-label-group">
-    <input type="number" id="inputName" class="form-control" name="value" value="{{value}}" placeholder="Value" required autofocus />
-    <label for="inputName">Pure number</label>
+  <div class="form-group">
+    <input type="number" id="inputName" class="form-control" name="value" value="{{value}}" placeholder="Value" required="required" autofocus="autofocus" />
   </div>
 
   <button type="submit" class="btn btn-lg btn-primary">Save</button>

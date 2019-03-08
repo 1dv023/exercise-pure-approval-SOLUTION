@@ -2,7 +2,7 @@
  * Mongoose configuration.
  *
  * @author Mats Loock
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 'use strict'
@@ -10,20 +10,17 @@
 const mongoose = require('mongoose')
 
 // DISCLAIMER: This is an example connection string. ALWAYS use an environment variable to store the connection string.
-const CONNECTION_STRING = 'mongodb://<dbuser>:<dbpassword>@ds012345.mlab.com:56789/pureapproval'
+const CONNECTION_STRING = 'mongodb+srv://<dbuser>:<dbpassword>@<cluster>.mongodb.net/<dbname>'
 
 /**
  * Establishes a connection to a database.
  *
  * @returns {Promise}
 */
-module.exports.run = async () => {
-  // Get Mongoose to use the global promise library.
-  mongoose.Promise = global.Promise
-
+module.exports.connect = async () => {
   // Bind connection to events (to get notifications).
   mongoose.connection.on('connected', () => console.log('Mongoose connection is open.'))
-  mongoose.connection.on('error', err => console.error(`Mongoose connection error has occured: ${err}`))
+  mongoose.connection.on('error', err => console.error(`Mongoose connection error has occurred: ${err}`))
   mongoose.connection.on('disconnected', () => console.log('Mongoose connection is disconnected.'))
 
   // If the Node process ends, close the Mongoose connection.
@@ -35,5 +32,8 @@ module.exports.run = async () => {
   })
 
   // Connect to the server.
-  return mongoose.connect(CONNECTION_STRING)
+  return mongoose.connect(CONNECTION_STRING, {
+    useCreateIndex: true,
+    useNewUrlParser: true
+  })
 }

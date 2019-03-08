@@ -2,7 +2,7 @@
  * Mongoose model PureNumber.
  *
  * @author Mats Loock
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 'use strict'
@@ -23,6 +23,8 @@ const pureNumberSchema = new Schema({
     required: true,
     default: Date.now
   }
+}, {
+  versionKey: false
 })
 
 // Create a model using the schema.

@@ -1,6 +1,5 @@
 <h2>Pure Numbers</h2>
 
-{{#if pureNumbers }}
 <table class="table table-hover">
   <caption>List of pure numbers</caption>
   <thead class="thead-light">
@@ -10,12 +9,17 @@
     </tr>
   </thead>
   <tbody>
-    {{#each pureNumbers}}
+    {{#if locals.pureNumbers.length}}
+    {{#each locals.pureNumbers}}
     <tr>
       <th scope="row">{{this.createdAt}}</th>
       <td>{{this.value}}</td>
     </tr>
     {{/each}}
+    {{else}}
+    <tr colspan="2">
+      <td class="text-center">No pure numbers to display.</td>
+    </tr>
+  {{/if}}
   </tbody>
 </table>
-{{/if}}

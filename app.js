@@ -2,41 +2,39 @@
  * The starting point of the application.
  *
  * @author Mats Loock
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 'use strict'
 
-const bodyParser = require('body-parser')
+const createError = require('http-errors')
 const express = require('express')
-const exphbs = require('express-handlebars')
+const hbs = require('express-hbs')
 const session = require('express-session')
 const path = require('path')
 const mongoose = require('./config/mongoose.js')
 
 const app = express()
-const port = process.env.PORT || 8000
 
 // Connect to the database.
-mongoose.run().catch(error => {
+mongoose.connect().catch(error => {
   console.error(error)
   process.exit(1)
 })
 
-// Configure rendering engine, with change extension to .hbs.
-app.engine('hbs', exphbs({
-  extname: '.hbs',
-  defaultLayout: 'main'
-}))
-
 // Setup view engine.
+app.engine('hbs', hbs.express4({
+  defaultLayout: path.join(__dirname, 'views', 'layouts', 'default'),
+  partialsDir: path.join(__dirname, 'views', 'partials')
+}))
 app.set('view engine', 'hbs')
+app.set('views', path.join(__dirname, 'views'))
 
 // Serve static files.
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Parse application/x-www-form-urlencoded.
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }))
 
 // Setup session store with the given options.
 const sessionOptions = {
@@ -46,7 +44,8 @@ const sessionOptions = {
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 // 1 day
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    sameSite: 'lax'
   }
 }
 
@@ -57,25 +56,28 @@ if (app.get('env') === 'production') {
 
 app.use(session(sessionOptions))
 
-// Flash messages - survives only a round trip.
+// Middleware to be executed before the routes.
 app.use((req, res, next) => {
+  // Flash messages - survives only a round trip.
   res.locals.flash = req.session.flash
   delete req.session.flash
+
   next()
 })
 
 // Define routes.
-app.use('/', require('./routes/pureNumberRoutes'))
-app.use((req, res, next) => { // catch 404 (ALWAYS keep this as the last route)
-  const error = new Error('Not Found')
-  error.status = 404
-  next(error)
-})
+app.use('/', require('./routes/pureNumberRouter'))
+app.use('*', (req, res, next) => next(createError(404))) // catch 404 (ALWAYS keep this as the last route)
 
 // Error handler.
 app.use((err, req, res, next) => {
+  // 403 Forbidden.
+  if (err.statusCode === 403) {
+    return res.status(403).sendFile(path.join(__dirname, 'views', 'error', '403.html'))
+  }
+
   // 404 Not Found.
-  if (err.status === 404) {
+  if (err.statusCode === 404) {
     return res.status(404).sendFile(path.join(__dirname, 'views', 'error', '404.html'))
   }
 
@@ -93,7 +95,7 @@ app.use((err, req, res, next) => {
 })
 
 // Start listening.
-app.listen(port, () => {
-  console.log(`\nServer started on http://localhost:${port}`)
-  console.log('Press Ctrl-C to terminate...\n')
+app.listen(3000, () => {
+  console.log('Server started on http://localhost:3000')
+  console.log('Press Ctrl-C to terminate...')
 })
