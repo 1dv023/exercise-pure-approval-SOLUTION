@@ -44,7 +44,7 @@ pureNumberController.create = async (req, res) => {
 pureNumberController.createPost = async (req, res) => {
   try {
     // Create a new pure number...
-    let pureNumber = new PureNumber({
+    const pureNumber = new PureNumber({
       value: req.body.value
     })
 
@@ -93,7 +93,7 @@ module.exports = pureNumberController
 //   .post(async (req, res, next) => {
 //     try {
 //       // Create a new pure number...
-//       let pureNumber = new PureNumber({
+//       const pureNumber = new PureNumber({
 //         value: req.body.value
 //       })
 

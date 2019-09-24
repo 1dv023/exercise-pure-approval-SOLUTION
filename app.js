@@ -11,7 +11,7 @@ const createError = require('http-errors')
 const express = require('express')
 const hbs = require('express-hbs')
 const session = require('express-session')
-const path = require('path')
+const { resolve } = require('path')
 const mongoose = require('./config/mongoose.js')
 
 const app = express()
@@ -24,14 +24,14 @@ mongoose.connect().catch(error => {
 
 // Setup view engine.
 app.engine('hbs', hbs.express4({
-  defaultLayout: path.join(__dirname, 'views', 'layouts', 'default'),
-  partialsDir: path.join(__dirname, 'views', 'partials')
+  defaultLayout: resolve('views', 'layouts', 'default'),
+  partialsDir: resolve('views', 'partials')
 }))
 app.set('view engine', 'hbs')
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', resolve('views'))
 
 // Serve static files.
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(resolve('public')))
 
 // Parse application/x-www-form-urlencoded.
 app.use(express.urlencoded({ extended: true }))
@@ -66,24 +66,25 @@ app.use((req, res, next) => {
 })
 
 // Define routes.
+// catch 404 (ALWAYS keep this as the last route)
 app.use('/', require('./routes/pureNumberRouter'))
-app.use('*', (req, res, next) => next(createError(404))) // catch 404 (ALWAYS keep this as the last route)
+app.use('*', (req, res, next) => next(createError(404)))
 
 // Error handler.
 app.use((err, req, res, next) => {
   // 403 Forbidden.
   if (err.statusCode === 403) {
-    return res.status(403).sendFile(path.join(__dirname, 'views', 'error', '403.html'))
+    return res.status(403).sendFile(resolve('views', 'error', '403.html'))
   }
 
   // 404 Not Found.
   if (err.statusCode === 404) {
-    return res.status(404).sendFile(path.join(__dirname, 'views', 'error', '404.html'))
+    return res.status(404).sendFile(resolve('views', 'error', '404.html'))
   }
 
   // 500 Internal Server Error (in production, all other errors send this response).
   if (req.app.get('env') !== 'development') {
-    return res.status(500).sendFile(path.join(__dirname, 'views', 'error', '500.html'))
+    return res.status(500).sendFile(resolve('views', 'error', '500.html'))
   }
 
   // Development only!

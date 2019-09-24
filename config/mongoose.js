@@ -9,8 +9,8 @@
 
 const mongoose = require('mongoose')
 
-// DISCLAIMER: This is an example connection string. ALWAYS use an environment variable to store the connection string.
-const CONNECTION_STRING = 'mongodb+srv://<dbuser>:<dbpassword>@<cluster>.mongodb.net/<dbname>'
+// DISCLAIMER: This is an example connection string. ALWAYS use an environment variable to store the connection string. Find out more reading about the dotenv package.
+const CONNECTION_STRING = 'mongodb+srv://<dbuser>:<dbpassword>@<cluster>.mongodb.net/<dbname>?retryWrites=true&w=majority'
 
 /**
  * Establishes a connection to a database.
@@ -34,6 +34,7 @@ module.exports.connect = async () => {
   // Connect to the server.
   return mongoose.connect(CONNECTION_STRING, {
     useCreateIndex: true,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   })
 }
