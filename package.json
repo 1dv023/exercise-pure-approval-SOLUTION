@@ -4,7 +4,7 @@
   "description": "Exercise: Pure approval",
   "main": "app.js",
   "scripts": {
-    "lint": "standard | snazzy",
+    "lint": "standard | snazzy || exit 0",
     "lint:fix": "standard --fix",
     "start": "node app.js",
     "devstart": "nodemon --inspect ./app.js"
@@ -13,11 +13,11 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
-    "express-hbs": "^2.1.2",
-    "express-session": "^1.16.2",
+    "express-hbs": "^2.3.0",
+    "express-session": "^1.17.0",
     "http-errors": "^1.7.3",
     "moment": "^2.24.0",
-    "mongoose": "^5.7.1"
+    "mongoose": "^5.7.12"
   },
   "devDependencies": {
     "nodemon": "*",

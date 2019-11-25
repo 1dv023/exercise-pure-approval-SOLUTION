@@ -9,8 +9,8 @@
     </tr>
   </thead>
   <tbody>
-    {{#if locals.pureNumbers.length}}
-    {{#each locals.pureNumbers}}
+    {{#if viewData.pureNumbers.length}}
+    {{#each viewData.pureNumbers}}
     <tr>
       <th scope="row">{{this.createdAt}}</th>
       <td>{{this.value}}</td>

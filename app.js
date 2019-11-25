@@ -59,8 +59,10 @@ app.use(session(sessionOptions))
 // Middleware to be executed before the routes.
 app.use((req, res, next) => {
   // Flash messages - survives only a round trip.
-  res.locals.flash = req.session.flash
-  delete req.session.flash
+  if (req.session.flash) {
+    res.locals.flash = req.session.flash
+    delete req.session.flash
+  }
 
   next()
 })
@@ -72,19 +74,14 @@ app.use('*', (req, res, next) => next(createError(404)))
 
 // Error handler.
 app.use((err, req, res, next) => {
-  // 403 Forbidden.
-  if (err.statusCode === 403) {
-    return res.status(403).sendFile(resolve('views', 'error', '403.html'))
-  }
-
   // 404 Not Found.
   if (err.statusCode === 404) {
-    return res.status(404).sendFile(resolve('views', 'error', '404.html'))
+    return res.status(404).sendFile(resolve('public', '404.html'))
   }
 
   // 500 Internal Server Error (in production, all other errors send this response).
   if (req.app.get('env') !== 'development') {
-    return res.status(500).sendFile(resolve('views', 'error', '500.html'))
+    return res.status(500).sendFile(resolve('public', '500.html'))
   }
 
   // Development only!
