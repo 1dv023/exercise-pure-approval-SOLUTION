@@ -1,4 +1,12 @@
 
+# -----------------------------------------------------------------
+# NOTE! Never push the .env file to a repository. In this solution,
+#       it is added to the repository just for clarity.
+# -----------------------------------------------------------------
+# dotenv environment variables file
+# .env
+
+
 # Created by https://www.gitignore.io/api/node
 
 ### Node ###
@@ -57,10 +65,6 @@ typings/
 
 # Yarn Integrity file
 .yarn-integrity
-
-# dotenv environment variables file
-.env
-
 
 
 # End of https://www.gitignore.io/api/node

@@ -2,7 +2,7 @@
  * PureNumber controller.
  *
  * @author Mats Loock
- * @version 1.2.0
+ * @version 1.0.0
  */
 
 'use strict'
@@ -14,6 +14,9 @@ const pureNumberController = {}
 
 /**
  * Lists all pure numbers.
+ *
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
  */
 pureNumberController.index = async (req, res) => {
   const viewData = {
@@ -30,6 +33,9 @@ pureNumberController.index = async (req, res) => {
 
 /**
  * Renders a create form.
+ *
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
  */
 pureNumberController.create = async (req, res) => {
   const viewData = {
@@ -40,6 +46,9 @@ pureNumberController.create = async (req, res) => {
 
 /**
  * Creates a new pure number.
+ *
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
  */
 pureNumberController.createPost = async (req, res) => {
   try {

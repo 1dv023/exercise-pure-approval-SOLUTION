@@ -2,10 +2,17 @@
  * The starting point of the application.
  *
  * @author Mats Loock
- * @version 1.2.0
+ * @version 1.0.0
  */
 
 'use strict'
+
+// -----------------------------------------------------------------
+// NOTE! Never push the .env file to a repository. In this solution,
+//       it is added to the repository just for clarity.
+// -----------------------------------------------------------------
+
+require('dotenv').config()
 
 const createError = require('http-errors')
 const express = require('express')
@@ -76,12 +83,16 @@ app.use('*', (req, res, next) => next(createError(404)))
 app.use((err, req, res, next) => {
   // 404 Not Found.
   if (err.statusCode === 404) {
-    return res.status(404).sendFile(resolve('public', '404.html'))
+    return res
+      .status(404)
+      .sendFile(resolve('public', '404.html'))
   }
 
   // 500 Internal Server Error (in production, all other errors send this response).
   if (req.app.get('env') !== 'development') {
-    return res.status(500).sendFile(resolve('public', '500.html'))
+    return res
+      .status(500)
+      .sendFile(resolve('public', '500.html'))
   }
 
   // Development only!
@@ -93,7 +104,7 @@ app.use((err, req, res, next) => {
 })
 
 // Start listening.
-app.listen(3000, () => {
+app.listen(8000, () => {
   console.log('Server started on http://localhost:3000')
   console.log('Press Ctrl-C to terminate...')
 })

@@ -2,7 +2,7 @@
  * Mongoose configuration.
  *
  * @author Mats Loock
- * @version 1.2.0
+ * @version 1.0.0
  */
 
 'use strict'
@@ -10,12 +10,13 @@
 const mongoose = require('mongoose')
 
 // DISCLAIMER: This is an example connection string. ALWAYS use an environment variable to store the connection string. Find out more reading about the dotenv package.
-const CONNECTION_STRING = 'mongodb+srv://<dbuser>:<dbpassword>@<cluster>.mongodb.net/test?retryWrites=true&w=majority'
+// const CONNECTION_STRING = 'mongodb+srv://<dbUser>:<dbPassword>@<dbCluster>.mongodb.net/<dbName>?retryWrites=true&w=majority'
+
 /**
  * Establishes a connection to a database.
  *
- * @returns {Promise}
-*/
+ * @returns {Promise} Resolves to this if connection succeeded.
+ */
 module.exports.connect = async () => {
   // Bind connection to events (to get notifications).
   mongoose.connection.on('connected', () => console.log('Mongoose connection is open.'))
@@ -31,7 +32,7 @@ module.exports.connect = async () => {
   })
 
   // Connect to the server.
-  return mongoose.connect(CONNECTION_STRING, {
+  return mongoose.connect(process.env.DB_CONNECTION_STRING, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
