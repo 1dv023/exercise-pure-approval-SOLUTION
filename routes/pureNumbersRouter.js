@@ -9,7 +9,7 @@
 
 const router = require('express').Router()
 
-const controller = require('../controllers/pureNumberController')
+const controller = require('../controllers/pureNumbersController')
 
 // Lists all pure numbers.
 router.get('/', controller.index)

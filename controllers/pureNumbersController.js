@@ -1,5 +1,5 @@
 /**
- * PureNumber controller.
+ * PureNumbers controller.
  *
  * @author Mats Loock
  * @version 1.0.0
@@ -10,25 +10,30 @@
 const moment = require('moment')
 const PureNumber = require('../models/PureNumber')
 
-const pureNumberController = {}
+const pureNumbersController = {}
 
 /**
  * Lists all pure numbers.
  *
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
  */
-pureNumberController.index = async (req, res) => {
-  const viewData = {
-    pureNumbers: (await PureNumber.find({}))
-      .map(pureNumber => ({
-        id: pureNumber._id,
-        createdAt: moment(pureNumber.createdAt).fromNow(),
-        value: pureNumber.value
-      }))
-      .sort((a, b) => a.value - b.value)
+pureNumbersController.index = async (req, res, next) => {
+  try {
+    const viewData = {
+      pureNumbers: (await PureNumber.find({}))
+        .map(pureNumber => ({
+          id: pureNumber._id,
+          createdAt: moment(pureNumber.createdAt).fromNow(),
+          value: pureNumber.value
+        }))
+        .sort((a, b) => a.value - b.value)
+    }
+    res.render('pureNumbers/index', { viewData })
+  } catch (error) {
+    next(error)
   }
-  res.render('pureNumber/index', { viewData })
 }
 
 /**
@@ -37,11 +42,11 @@ pureNumberController.index = async (req, res) => {
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
  */
-pureNumberController.create = async (req, res) => {
+pureNumbersController.create = async (req, res) => {
   const viewData = {
     value: undefined
   }
-  res.render('pureNumber/create', { viewData })
+  res.render('pureNumbers/create', { viewData })
 }
 
 /**
@@ -50,7 +55,7 @@ pureNumberController.create = async (req, res) => {
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
  */
-pureNumberController.createPost = async (req, res) => {
+pureNumbersController.createPost = async (req, res) => {
   try {
     // Create a new pure number...
     const pureNumber = new PureNumber({
@@ -61,11 +66,11 @@ pureNumberController.createPost = async (req, res) => {
     await pureNumber.save()
 
     // ...and redirect and show a message.
-    req.session.flash = { type: 'success', text: 'The pure number saved successfully.' }
+    req.session.flash = { type: 'success', text: 'The pure number was saved successfully.' }
     res.redirect('.')
   } catch (error) {
     // If an error, or validation error, occurred, view the form and an error message.
-    return res.render('pureNumber/create', {
+    return res.render('pureNumbers/create', {
       validationErrors: [error.message] || [error.errors.value.message],
       value: req.body.value
     })
@@ -73,4 +78,4 @@ pureNumberController.createPost = async (req, res) => {
 }
 
 // Exports.
-module.exports = pureNumberController
+module.exports = pureNumbersController

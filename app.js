@@ -18,8 +18,9 @@ const createError = require('http-errors')
 const express = require('express')
 const hbs = require('express-hbs')
 const session = require('express-session')
-const { resolve } = require('path')
-const mongoose = require('./config/mongoose.js')
+const logger = require('morgan')
+const { join } = require('path')
+const mongoose = require('./configs/mongoose.js')
 
 const app = express()
 
@@ -31,14 +32,17 @@ mongoose.connect().catch(error => {
 
 // Setup view engine.
 app.engine('hbs', hbs.express4({
-  defaultLayout: resolve('views', 'layouts', 'default'),
-  partialsDir: resolve('views', 'partials')
+  defaultLayout: join(__dirname, 'views', 'layouts', 'default'),
+  partialsDir: join(__dirname, 'views', 'partials')
 }))
 app.set('view engine', 'hbs')
-app.set('views', resolve('views'))
+app.set('views', join(__dirname, 'views'))
+
+// Request logger
+app.use(logger('dev'))
 
 // Serve static files.
-app.use(express.static(resolve('public')))
+app.use(express.static(join(__dirname, 'public')))
 
 // Parse application/x-www-form-urlencoded.
 app.use(express.urlencoded({ extended: true }))
@@ -76,7 +80,7 @@ app.use((req, res, next) => {
 
 // Define routes.
 // catch 404 (ALWAYS keep this as the last route)
-app.use('/', require('./routes/pureNumberRouter'))
+app.use('/', require('./routes/pureNumbersRouter'))
 app.use('*', (req, res, next) => next(createError(404)))
 
 // Error handler.
@@ -85,26 +89,27 @@ app.use((err, req, res, next) => {
   if (err.statusCode === 404) {
     return res
       .status(404)
-      .sendFile(resolve('public', '404.html'))
+      .sendFile(join(__dirname, 'views', 'errors', '404.html'))
   }
 
   // 500 Internal Server Error (in production, all other errors send this response).
   if (req.app.get('env') !== 'development') {
     return res
       .status(500)
-      .sendFile(resolve('public', '500.html'))
+      .sendFile(join(__dirname, 'views', 'errors', '500.html'))
   }
 
   // Development only!
   // Set locals, only providing error in development.
-  res.locals.error = err
 
   // Render the error page.
-  res.status(err.status || 500).render('error/error')
+  res
+    .status(err.status || 500)
+    .render('errors/error', { error: err })
 })
 
 // Start listening.
 app.listen(8000, () => {
-  console.log('Server started on http://localhost:3000')
+  console.log('Server started on http://localhost:8000')
   console.log('Press Ctrl-C to terminate...')
 })
