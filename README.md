@@ -24,7 +24,7 @@ If the number is between 1 and 42, save the number in the database (with a times
 
 If the user gives a number that is not between 1 and 42, the application should respond with an error message; the same goes for any other type of error.
 
-![error](./.readme/error.png)
+![error](./.readme/validation-error.png)
 
 ## Custom handling of 404 and 500
 
