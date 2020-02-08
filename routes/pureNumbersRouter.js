@@ -14,10 +14,9 @@ const controller = require('../controllers/pureNumbersController')
 // Lists all pure numbers.
 router.get('/', controller.index)
 
-// Creates a new purse number.
-router.route('/create')
-  .get(controller.create)
-  .post(controller.createPost)
+// Creates a new pure number.
+router.get('/new', controller.new)
+router.post('/create', controller.create)
 
 // Exports.
 module.exports = router

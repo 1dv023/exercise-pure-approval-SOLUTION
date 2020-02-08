@@ -13,7 +13,7 @@ const PureNumber = require('../models/PureNumber')
 const pureNumbersController = {}
 
 /**
- * Lists all pure numbers.
+ * Displays a list of pure numbers.
  *
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
@@ -37,16 +37,16 @@ pureNumbersController.index = async (req, res, next) => {
 }
 
 /**
- * Renders a create form.
+ * Returns a HTML form for creating a new pure number.
  *
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
  */
-pureNumbersController.create = async (req, res) => {
+pureNumbersController.new = async (req, res) => {
   const viewData = {
     value: undefined
   }
-  res.render('pureNumbers/create', { viewData })
+  res.render('pureNumbers/new', { viewData })
 }
 
 /**
@@ -55,7 +55,7 @@ pureNumbersController.create = async (req, res) => {
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
  */
-pureNumbersController.createPost = async (req, res) => {
+pureNumbersController.create = async (req, res) => {
   try {
     // Create a new pure number...
     const pureNumber = new PureNumber({
@@ -70,7 +70,7 @@ pureNumbersController.createPost = async (req, res) => {
     res.redirect('.')
   } catch (error) {
     // If an error, or validation error, occurred, view the form and an error message.
-    return res.render('pureNumbers/create', {
+    return res.render('pureNumbers/new', {
       validationErrors: [error.message] || [error.errors.value.message],
       value: req.body.value
     })
